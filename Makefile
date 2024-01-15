@@ -13,6 +13,9 @@ TARGET := $(BIN_DIR)/main
 
 all: $(TARGET)
 
+debug: CXXFLAGS += -g
+debug: all
+
 $(TARGET): $(OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTKMMFLAGS)
