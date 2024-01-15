@@ -15,10 +15,12 @@ GridWindow::GridWindow(int rows, int cols)
     for (int i = 0; i < rows; i++)
     {
         m_buttons.push_back(std::vector<Gtk::ToggleButton>());
+        next_state.push_back(std::vector<bool>());
         for (int j = 0; j < cols; j++)
         {
+            next_state[i].push_back(false);
             m_buttons[i].push_back(Gtk::ToggleButton());
-            m_buttons[i][j].get_style_context()->add_class("rectangular");
+            m_buttons[i][j].set_size_request(40, 40);
         }
     }
 

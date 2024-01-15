@@ -1,3 +1,10 @@
-.rectangular {
+.toggle {
     border-radius: 0;
+    border: 1px solid #ababab;
+
+    background-image: image(#333333);
+}
+
+.toggle:checked {
+    background-image: image(white);
 }

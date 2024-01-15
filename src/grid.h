@@ -19,6 +19,7 @@ protected:
     // Member widgets:
     Gtk::Grid m_grid;
     std::vector<std::vector<Gtk::ToggleButton>> m_buttons;
+    std::vector<std::vector<bool>> next_state;
     int rows;
     int cols;
 };
