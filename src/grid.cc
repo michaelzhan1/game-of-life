@@ -89,22 +89,29 @@ bool GridWindow::on_key_press_event(GdkEventKey* eventkey)
 bool GridWindow::update_grid()
 {
     std::cout << "Updating grid" << std::endl;
-    int direction[] = {-1, 0, 1, 0, -1};
     int neighborCount;
+    bool changed = false;
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++)
         {
             neighborCount = 0;
-            for (int di = 0; di < 4; di++)
+            for (int di = -1; di < 2; di++)
             {
-                int ni = i + direction[di];
-                int nj = j + direction[di + 1];
-                if (ni >= 0 && ni < rows && nj >= 0 && nj < cols)
+                for (int dj = -1; dj < 2; dj++)
                 {
-                    if (m_buttons[ni][nj].get_active())
+                    if (di == 0 && dj == 0)
                     {
-                        neighborCount++;
+                        continue;
+                    }
+                    int ni = i + di;
+                    int nj = j + dj;
+                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols)
+                    {
+                        if (m_buttons[ni][nj].get_active())
+                        {
+                            neighborCount++;
+                        }
                     }
                 }
             }
@@ -114,6 +121,7 @@ bool GridWindow::update_grid()
                 if (neighborCount < 2 || neighborCount > 3)
                 {
                     next_state[i][j] = false;
+                    changed = true;
                 }
                 else
                 {
@@ -125,6 +133,7 @@ bool GridWindow::update_grid()
                 if (neighborCount == 3)
                 {
                     next_state[i][j] = true;
+                    changed = true;
                 }
                 else
                 {
@@ -132,6 +141,12 @@ bool GridWindow::update_grid()
                 }
             }
         }
+    }
+
+    if (!changed)
+    {
+        stop_update_grid();
+        std::cout << "Loop stopped" << std::endl;
     }
 
     for (int i = 0; i < rows; i++)
