@@ -1,3 +1,4 @@
+// File "grid.h"
 #ifndef GRIDWINDOW_H
 #define GRIDWINDOW_H
 
@@ -23,13 +24,13 @@ protected:
     void stop_update_grid();
 
     // Menubar functions:
-    void on_menu_help();
-    void on_menu_about();
     void on_menu_start();
     void on_menu_stop();
     void on_menu_reset();
     void on_menu_grid_size();
     void on_menu_grid_speed();
+    void on_menu_help();
+    void on_menu_about();
 
     // Game option functions:
     void reset_grid();
@@ -46,9 +47,9 @@ protected:
     std::vector<std::vector<bool>> next_state;
     int rows;
     int cols;
+    int speed = 300;
     bool loopRunning = false;
     sigc::connection loopConnection;
-    int speed = 100;
 };
 
 #endif // GRIDWINDOW_H

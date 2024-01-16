@@ -13,6 +13,7 @@
 #include <iostream>
 #include <vector>
 
+// Constructor
 GridWindow::GridWindow(int rows, int cols)
 : vbox(Gtk::ORIENTATION_VERTICAL), rows(rows), cols(cols)
 {
@@ -77,9 +78,13 @@ GridWindow::GridWindow(int rows, int cols)
         menuBar.pack_start(*pMenubar, Gtk::PACK_SHRINK);
     }
 
+    // Grid display
     set_title("Conway's Game of Life");
     set_border_width(10);
     set_default_size(800, 600);
+
+    m_grid.set_row_homogeneous(true);
+    m_grid.set_column_homogeneous(true);
     
     for (int i = 0; i < rows; i++)
     {
@@ -93,9 +98,6 @@ GridWindow::GridWindow(int rows, int cols)
             m_buttons[i][j].set_can_focus(false);
         }
     }
-
-    m_grid.set_row_homogeneous(true);
-    m_grid.set_column_homogeneous(true);
 
     for (int i = 0; i < rows; i++)
     {
@@ -113,6 +115,7 @@ GridWindow::GridWindow(int rows, int cols)
         false
     );
 
+    // Add widgets to window
     vbox.pack_start(menuBar, Gtk::PACK_SHRINK);
     vbox.pack_start(m_grid);
 
@@ -153,14 +156,17 @@ bool GridWindow::on_key_press_event(GdkEventKey* eventkey)
         case GDK_KEY_Escape:
             close();
             break;
+
+        case GDK_KEY_r:
+            reset_grid();
+            break;
     }
     return true;
 }
 
-// Main game logic
+// Main game logic loop
 bool GridWindow::update_grid()
 {
-    std::cout << "Updating grid" << std::endl;
     int neighborCount;
     bool changed = false;
     for (int i = 0; i < rows; i++)
@@ -218,7 +224,6 @@ bool GridWindow::update_grid()
     if (!changed)
     {
         stop_update_grid();
-        std::cout << "Loop stopped" << std::endl;
     }
 
     for (int i = 0; i < rows; i++)
@@ -234,8 +239,11 @@ bool GridWindow::update_grid()
 // Stop the loop
 void GridWindow::stop_update_grid()
 {
-    loopRunning = false;
-    loopConnection.disconnect();
+    if (loopRunning) {
+        loopRunning = false;
+        loopConnection.disconnect();
+        std::cout << "Loop stopped" << std::endl;
+    }
 }
 
 // Menu button: Start
@@ -261,7 +269,7 @@ void GridWindow::on_menu_reset()
     reset_grid();
 }
 
-// Open grid size dialog
+// Menu button: Grid size
 void GridWindow::on_menu_grid_size()
 {
     Gtk::Dialog dialog("Change grid size", *this);
@@ -300,7 +308,7 @@ void GridWindow::on_menu_grid_size()
     }
 }
 
-// Open grid speed dialog
+// Menu button: Grid speed
 void GridWindow::on_menu_grid_speed()
 {
     Gtk::Dialog dialog("Change grid speed", *this);
@@ -333,7 +341,7 @@ void GridWindow::on_menu_grid_speed()
     }
 }
 
-// Open help dialog
+// Menu button: Help
 void GridWindow::on_menu_help()
 {
     Gtk::MessageDialog dialog(*this, "How-to");
@@ -341,7 +349,7 @@ void GridWindow::on_menu_help()
     dialog.run();
 }
 
-// Open about dialog
+// Menu button: About
 void GridWindow::on_menu_about()
 {
     Gtk::MessageDialog dialog(*this, "About");
@@ -349,11 +357,10 @@ void GridWindow::on_menu_about()
     dialog.run();
 }
 
-// Reset the grid
+// Helper function: Reset the grid
 void GridWindow::reset_grid()
 {
     stop_update_grid();
-    std::cout << "Loop stopped" << std::endl;
     for (size_t i = 0; i < m_buttons.size(); i++)
     {
         for (size_t j = 0; j < m_buttons[i].size(); j++)
@@ -363,17 +370,10 @@ void GridWindow::reset_grid()
     }
 }
 
-// Set the speed of the loop
-void GridWindow::set_speed(int newSpeed)
-{
-    speed = newSpeed;
-    if (speed < 1) speed = 1;
-    if (speed > 1000) speed = 1000;
-}
-
-// Set the size of the grid
+// Helper function: Set grid size
 void GridWindow::set_grid_size(int newRows, int newCols)
 {
+    stop_update_grid();
     rows = newRows;
     cols = newCols;
 
@@ -382,8 +382,7 @@ void GridWindow::set_grid_size(int newRows, int newCols)
     if (rows > 30) rows = 30;
     if (cols > 50) cols = 50;
 
-    std::cout << "Setting grid size to " << rows << "x" << cols << std::endl;
-
+    // Remove old buttons
     for (size_t i = 0; i < m_buttons.size(); i++)
     {
         for (size_t j = 0; j < m_buttons[i].size(); j++)
@@ -391,12 +390,10 @@ void GridWindow::set_grid_size(int newRows, int newCols)
             m_grid.remove(m_buttons[i][j]);
         }
     }
-
     m_buttons.clear();
     next_state.clear();
 
-    int squareSize = 1;
-
+    // Add new buttons
     for (int i = 0; i < rows; i++)
     {
         m_buttons.push_back(std::vector<Gtk::ToggleButton>());
@@ -405,12 +402,10 @@ void GridWindow::set_grid_size(int newRows, int newCols)
         {
             next_state[i].push_back(false);
             m_buttons[i].push_back(Gtk::ToggleButton());
-            m_buttons[i][j].set_size_request(squareSize, squareSize);
+            m_buttons[i][j].set_size_request(1, 1);
             m_buttons[i][j].set_can_focus(false);
         }
     }
-
-    std::cout << "m_buttons size " << m_buttons.size() << "x" << m_buttons[0].size() << std::endl;
 
     for (int i = 0; i < rows; i++)
     {
@@ -425,4 +420,12 @@ void GridWindow::set_grid_size(int newRows, int newCols)
 
     show_all_children();
     resize(1, 1);
+}
+
+// Helper function: Set grid speed
+void GridWindow::set_speed(int newSpeed)
+{
+    speed = newSpeed;
+    if (speed < 1) speed = 1;
+    if (speed > 1000) speed = 1000;
 }
