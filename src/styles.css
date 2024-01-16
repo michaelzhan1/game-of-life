@@ -1,8 +1,8 @@
 .toggle {
     border-radius: 0;
     border: 1px solid #ababab;
-
     background-image: image(#333333);
+    transition: none;
 }
 
 .toggle:checked {

@@ -15,6 +15,11 @@ public:
 protected:
     // Signal handlers:
     void on_button_clicked(int row, int col);
+    bool on_key_press_event(GdkEventKey* eventkey);
+
+    // Game logic:
+    bool update_grid();
+    void stop_update_grid();
 
     // Member widgets:
     Gtk::Grid m_grid;
@@ -22,6 +27,8 @@ protected:
     std::vector<std::vector<bool>> next_state;
     int rows;
     int cols;
+    bool loopRunning = false;
+    sigc::connection loopConnection;
 };
 
 #endif // GRIDWINDOW_H

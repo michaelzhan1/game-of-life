@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
         GTK_STYLE_PROVIDER_PRIORITY_USER
     );
 
-    GridWindow grid(10, 10);
+    GridWindow grid(40, 20);
 
     // Shows the window and returns when it is closed.
     return app->run(grid);
