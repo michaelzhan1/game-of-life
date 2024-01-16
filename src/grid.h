@@ -4,6 +4,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
+#include <gtkmm/box.h>
 #include <vector>
 
 class GridWindow : public Gtk::Window
@@ -23,6 +24,8 @@ protected:
 
     // Member widgets:
     Gtk::Grid m_grid;
+    Gtk::Box menuBar;
+    Gtk::Box vbox;
     std::vector<std::vector<Gtk::ToggleButton>> m_buttons;
     std::vector<std::vector<bool>> next_state;
     int rows;

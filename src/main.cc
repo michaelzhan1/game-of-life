@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
         cssProvider,
         GTK_STYLE_PROVIDER_PRIORITY_USER
     );
-
+    
     GridWindow grid(5, 5);
 
     // Shows the window and returns when it is closed.

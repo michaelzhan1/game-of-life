@@ -1,14 +1,47 @@
 // File "grid.cc"
 #include "grid.h"
-#include <iostream>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/button.h>
 #include <glibmm/main.h>
+#include <gtkmm/actiongroup.h>
+#include <gtkmm/action.h>
+#include <gtkmm/uimanager.h>
+#include <gtkmm/box.h>
+#include <iostream>
 #include <vector>
 
 GridWindow::GridWindow(int rows, int cols)
 : rows(rows), cols(cols)
 {
+    Glib::RefPtr<Gtk::ActionGroup> actionGroup = Gtk::ActionGroup::create();
+    actionGroup->add(Gtk::Action::create("Options", "Options"));
+    actionGroup->add(Gtk::Action::create("Start", "Start"));
+    actionGroup->add(Gtk::Action::create("Stop", "Stop"));
+    actionGroup->add(Gtk::Action::create("Help", "Help"));
+    actionGroup->add(Gtk::Action::create("About", "About"));
+
+    Glib::RefPtr<Gtk::UIManager> uiManager = Gtk::UIManager::create();
+    uiManager->insert_action_group(actionGroup);
+    Glib::ustring ui_info =
+        "<ui>"
+        "   <menubar name='MenuBar'>"
+        "       <menu action='Options'>"
+        "           <menuitem action='Start'/>"
+        "           <menuitem action='Stop'/>"
+        "       </menu>"
+        "       <menu action='Help'>"
+        "           <menuitem action='About'/>"
+        "       </menu>"
+        "   </menubar>"
+        "</ui>";
+    uiManager->add_ui_from_string(ui_info);
+
+    Gtk::Widget* pMenubar = uiManager->get_widget("/MenuBar");
+    if (pMenubar)
+    {
+        menuBar.pack_start(*pMenubar, Gtk::PACK_SHRINK);
+    }
+
     set_title("Conway's Game of Life");
     set_border_width(10);
     set_default_size(400, 400);
@@ -45,7 +78,12 @@ GridWindow::GridWindow(int rows, int cols)
         false
     );
 
-    add(m_grid);
+    vbox.set_orientation(Gtk::ORIENTATION_VERTICAL);
+
+    vbox.pack_start(menuBar, Gtk::PACK_SHRINK);
+    vbox.pack_start(m_grid);
+
+    add(vbox);
     show_all_children();
 }
 
