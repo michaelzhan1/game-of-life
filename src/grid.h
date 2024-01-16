@@ -48,7 +48,7 @@ protected:
     int cols;
     bool loopRunning = false;
     sigc::connection loopConnection;
-    int speed = 500;
+    int speed = 100;
 };
 
 #endif // GRIDWINDOW_H

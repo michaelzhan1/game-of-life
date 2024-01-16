@@ -79,7 +79,7 @@ GridWindow::GridWindow(int rows, int cols)
 
     set_title("Conway's Game of Life");
     set_border_width(10);
-    set_default_size(200, 200);
+    set_default_size(800, 600);
     
     for (int i = 0; i < rows; i++)
     {
@@ -104,7 +104,7 @@ GridWindow::GridWindow(int rows, int cols)
             m_buttons[i][j].signal_clicked().connect(
                 sigc::bind<int, int>(sigc::mem_fun(*this, &GridWindow::on_button_clicked), i, j)
             );
-            m_grid.attach(m_buttons[i][j], i, j, 1, 1);
+            m_grid.attach(m_buttons[i][j], j, i, 1, 1);
         }
     }
 
@@ -377,10 +377,10 @@ void GridWindow::set_grid_size(int newRows, int newCols)
     rows = newRows;
     cols = newCols;
 
-    if (rows < 1) rows = 1;
-    if (cols < 1) cols = 1;
-    if (rows > 200) rows = 200;
-    if (cols > 200) cols = 200;
+    if (rows < 3) rows = 3;
+    if (cols < 3) cols = 3;
+    if (rows > 30) rows = 30;
+    if (cols > 50) cols = 50;
 
     std::cout << "Setting grid size to " << rows << "x" << cols << std::endl;
 
@@ -395,6 +395,8 @@ void GridWindow::set_grid_size(int newRows, int newCols)
     m_buttons.clear();
     next_state.clear();
 
+    int squareSize = 1;
+
     for (int i = 0; i < rows; i++)
     {
         m_buttons.push_back(std::vector<Gtk::ToggleButton>());
@@ -403,7 +405,7 @@ void GridWindow::set_grid_size(int newRows, int newCols)
         {
             next_state[i].push_back(false);
             m_buttons[i].push_back(Gtk::ToggleButton());
-            m_buttons[i][j].set_size_request(40, 40);
+            m_buttons[i][j].set_size_request(squareSize, squareSize);
             m_buttons[i][j].set_can_focus(false);
         }
     }
@@ -417,9 +419,10 @@ void GridWindow::set_grid_size(int newRows, int newCols)
             m_buttons[i][j].signal_clicked().connect(
                 sigc::bind<int, int>(sigc::mem_fun(*this, &GridWindow::on_button_clicked), i, j)
             );
-            m_grid.attach(m_buttons[i][j], i, j, 1, 1);
+            m_grid.attach(m_buttons[i][j], j, i, 1, 1);
         }
     }
 
     show_all_children();
+    resize(1, 1);
 }
